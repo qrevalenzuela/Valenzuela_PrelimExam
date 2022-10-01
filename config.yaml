@@ -1,0 +1,25 @@
+---
+- hosts: all
+  module_defaults:
+    ansible.builtin.file:
+        pip: pip3
+        python: python3
+  become: true
+  tasks:
+      - name: Update the Repository Index
+        apt:
+          update_cache: Yes
+        when: ansible_distribution in ("Ubuntu)
+
+      - name: Installing pip3, python3, java open-jdk in Ubuntu
+        apt: 
+          name:
+             - pip3
+             - python3
+             - java-1.8.0-openjdk
+          state: latest
+          when: ansible_distribution == "Ubuntu"
+
+
+
+
