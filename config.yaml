@@ -1,25 +1,39 @@
 ---
 - hosts: all
   module_defaults:
-    ansible.builtin.file:
-        pip: pip3
+        pip: python3-pip
         python: python3
+ 
   become: true
   tasks:
       - name: Update the Repository Index
         apt:
           update_cache: Yes
-        when: ansible_distribution in ("Ubuntu)
+        when: ansible_distribution == "Ubuntu"
 
       - name: Installing pip3, python3, java open-jdk in Ubuntu
-        apt: 
+        apt:
           name:
-             - pip3
-             - python3
-             - java-1.8.0-openjdk
+              - python3-pip
+              - python3
+              - openjdk-8-jdk
           state: latest
-          when: ansible_distribution == "Ubuntu"
-
-
-
-
+        when: ansible_distribution == "Ubuntu"
+      - name: Installing pip3, python3, java open-jdk in CentOS
+        dnf:
+          name:
+              - python3-pip
+              - python3
+              - java-1.8.0-openjdk
+          state: latest
+        when: ansible_distribution == "CentOS"
+      - name: Creating user with variable defined
+        ansible.builtin.user:
+              name: Robin 
+              uid: 1090
+              group: root
+              home: /home/Robin
+      - name: Creating an MOTD defined
+        copy:
+                content: "Ansible Managed node by Robin"
+                dest: /etc/motd
